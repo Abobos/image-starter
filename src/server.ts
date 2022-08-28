@@ -1,6 +1,8 @@
-import express from "express";
+import express, { Request, Response } from "express";
+
 import bodyParser from "body-parser";
 import { filterImageFromURL, deleteLocalFiles } from "./util/util";
+import { TypedRequestQuery } from "./util/types";
 
 (async () => {
   // Init the Express application
@@ -36,9 +38,9 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
     res.send("try GET /filteredimage?image_url={{}}");
   });
 
-  app.get("/filteredimage", async (req, res) => {
+  app.get("/filteredimage", async (req: TypedRequestQuery, res: Response) => {
     try {
-      const { image_url } = req.query;
+      const { image_url }: { image_url: string } = req.query;
 
       if (!image_url) {
         return res.status(422).json({
@@ -47,7 +49,7 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
         });
       }
 
-      const filteredpath = await filterImageFromURL(image_url);
+      const filteredpath: string = await filterImageFromURL(image_url);
 
       res.sendFile(filteredpath);
 
